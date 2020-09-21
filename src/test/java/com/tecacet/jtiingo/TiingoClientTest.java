@@ -20,6 +20,7 @@ class TiingoClientTest {
         assertEquals("NASDAQ", result.getExchangeCode());
         assertEquals("TSLA", result.getTicker());
         assertEquals(LocalDate.of(2010,6,29), result.getStartDate());
+
     }
 
     @Test
@@ -40,5 +41,23 @@ class TiingoClientTest {
         Map<LocalDate, Quote> quoteMap = TiingoClient.toMap(quotes);
         Quote splitQuote = quoteMap.get(LocalDate.of(2020, 8, 31));
         assertEquals(5.0, splitQuote.getSplitFactor().doubleValue(), 0.001);
+    }
+
+    @Test
+    void mutualFunds() {
+        TiingoClient tiingoClient = TiingoClient.getInstance();
+        StockMetadata metadata = tiingoClient.getMetadata("VMFXX");
+        assertEquals("VANGUARD FEDERAL MONEY MARKET FUND INVESTOR SHARES", metadata.getName());
+
+        Quote lastQuote = tiingoClient.getLastQuote("FBCVX");
+        assertEquals(0, lastQuote.getVolume());
+        assertEquals(0, lastQuote.getAdjVolume());
+        assertEquals(lastQuote.getClose(), lastQuote.getOpen());
+
+        List<? extends Quote> quotes = tiingoClient.getQuoteHistory("SFLNX",
+                LocalDate.of(2019, 1, 1),
+                LocalDate.of(2020, 1, 11));
+        assertEquals(259, quotes.size());
+
     }
 }
