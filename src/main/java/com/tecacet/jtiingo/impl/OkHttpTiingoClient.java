@@ -45,7 +45,7 @@ public class OkHttpTiingoClient implements TiingoClient {
 
     @Override
     @SneakyThrows
-    public Quote getQuote(String symbol) {
+    public Quote getLastQuote(String symbol) {
         String url = String.format("%s/%s/prices", DAILY_URL_BASE, symbol);
         log.info("Calling url {}", url);
         String content = execute(url);

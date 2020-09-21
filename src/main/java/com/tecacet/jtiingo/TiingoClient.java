@@ -6,6 +6,9 @@ import com.tecacet.jtiingo.impl.OkHttpTiingoClient;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public interface TiingoClient {
 
@@ -24,8 +27,11 @@ public interface TiingoClient {
 
     StockMetadata getMetadata(String symbol);
 
-    Quote getQuote(String symbol);
+    Quote getLastQuote(String symbol);
 
     List<? extends Quote> getQuoteHistory(String symbol, LocalDate startDate, LocalDate endDate);
 
+    static Map<LocalDate, Quote> toMap( List<? extends Quote> quotes) {
+        return quotes.stream().collect(Collectors.toMap(Quote::getDate, Function.identity()));
+    }
 }
